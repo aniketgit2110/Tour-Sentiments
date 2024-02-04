@@ -1,10 +1,12 @@
 import React from 'react'
-
+import CommonSection from '../shared/CommonSection'
+import '../styles/tours.css'
+import SearchBar from '../shared/SearchBar'
 const Tours = () => {
   return (
-    <div>
-      Tours
-    </div>
+    <>
+    <CommonSection title={'Tours'}/>
+    </>
   )
 }
 
