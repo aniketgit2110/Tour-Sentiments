@@ -7,7 +7,7 @@ import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import Home from '../pages/Home';
 import ThankYou from "../pages/ThankYou";
-
+import Weather from '../pages/Weather';
 
 const Routers = () => {
   return (
@@ -15,6 +15,7 @@ const Routers = () => {
       <Route path='/' element={<Navigate to='/home/' />} />
       <Route path='/home' element={<Home/>} />
       <Route path='/tours' element={<Tours/>} />
+      <Route path='/weather' element={<Weather/>} />
       <Route path='/tours/:id' element={<TourDetails/>} />
       <Route path='/login' element={<Login/>} />
       <Route path='/register' element={<Register/>} />

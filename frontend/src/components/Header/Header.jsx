@@ -21,6 +21,10 @@ const nav__links=[
   {
     path:'/tours',
     display:'Tours'
+  },
+  {
+    path:'/weather',
+    display:'Weather'
   }
 ]
 function Header({ onSearch }) {

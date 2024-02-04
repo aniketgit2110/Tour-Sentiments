@@ -9,7 +9,7 @@ import customizationImg from "../assets/images/customization.png";
 const serviceData = [
   {
     imgUrl: weatherImg,
-    title: "Calculate Weather",
+    title: "Check Weather",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, voluptatum.",
   },
   {
