@@ -1,0 +1,21 @@
+urls-mapping(url to view)
+views-acts like controller(accepts requests)
+function based ,class based
+takes (request),returns something(in api we returns json(JsonResponse(list,safe=False)) but we don't directly use this,we use django rest framework)
+serializers-changes models in django to json format
+
+refer django rest_framework documentation:
+pip install djangorestframework
+put rest_framework in Installed_apps
+add default_permission(not necessary)
+
+create the model
+create the serializer:
+import serializer from rest and models from model folder
+edit views file:
+  import viewsets from rest_framework
+  viewsets.ModelViewSet->
+  provides create(),retrieve(),partial_update()....
+  make/import queryset and serializer
+edit urls file:
+  create router
