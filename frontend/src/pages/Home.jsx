@@ -76,6 +76,8 @@ const Home = () => {
    </section>
   {/* feature section ends */}
 
+  {//weather section
+  }
   </>
 }
 

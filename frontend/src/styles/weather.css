@@ -1,0 +1,163 @@
+.head{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+#input {
+    font-size: 15px;
+    padding: 7px 10px;
+    color: black;
+    outline: none;
+    border: 2px solid black;
+    border-radius: 20px;
+    margin-right: 7px;
+    transition: all 0.7s;
+    height: 40px;
+    width: 180px;
+}
+
+#input:hover {
+    opacity: 0.6;
+}
+
+#search {
+    font-size: 15px;
+    padding: 7px 10px;
+    background-color: orange;
+    color: white;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.7s;
+
+    height: 40px;
+    width: 180px;
+}
+
+#search:hover {
+    background-color: white;
+    color: orange;
+    border: 2px solid orange;
+}
+
+
+.center {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 30px;
+}
+.icon img{
+    width: 50px;
+    height: 50px;
+    margin-right: 7px;
+}
+.icons img{
+    width: 30px;
+    height: 30px;
+}
+.condition{
+    background-color: orange;
+    color: white;
+    padding: 7px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.city {
+    font-size: 50px;
+}
+
+.country {
+    font-size: 30px;
+    margin-left: 7px;
+    margin-top: 5px;
+}
+
+.class {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-top: 20px;
+}
+
+.part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    color: white;
+    background-color: orange;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 20px;
+    width: 200px;
+}
+
+.component {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-top: 10px;
+}
+
+.days {
+    display: grid;
+    padding: 50px;
+    padding-top: -20px;
+    padding-left: 66px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 10px; 
+  }
+
+.day {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: orange;
+    color: white;
+    border-radius: 30px;
+    padding: 10px;
+    width: 200px;
+    height: 200px;
+}
+
+.values {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px; 
+    margin-left: -10px;   
+}
+
+#nameofday {
+    padding-top: -10px;
+}
+.text{
+    color: black;
+    text-align: center;
+    justify-content: center;
+}
+.heading{
+    text-align: center;
+    color: black;
+}
