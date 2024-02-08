@@ -13,9 +13,8 @@ export const register = async(req,res)=>{
 
         const newUser = new User({
             username:req.body.username,
-            email:req.body.emil,
+            email:req.body.email,
             password:hash,
-            photo:req.body.photo
         });
 
         await newUser.save()
@@ -29,7 +28,7 @@ export const register = async(req,res)=>{
     }catch(err){
         res.status(500).json({
             success:false,
-            message:'Error occured while registering gthe user'
+            message:'Error occured while registering the user'
         })
     }
 }
