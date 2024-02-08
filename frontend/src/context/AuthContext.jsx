@@ -6,7 +6,7 @@ const initial_state = {
     error:null,
 }
 
-export const AuthContext = createContext(initial_state);
+export const AuthContext = createContext(initial_state)
 
 const AuthReducer = (state,action) =>{
     switch(action.type){
@@ -57,6 +57,7 @@ export const AuthContextProvider = ({children})=>{
         user:state.user,
         loading: state.loading,
         error:state.error,
+        dispatch,
     }}>
         {children}
     </AuthContext.Provider>
