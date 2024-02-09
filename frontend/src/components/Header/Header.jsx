@@ -1,13 +1,15 @@
 // Header.jsx
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 // import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Container, Row,Button} from 'reactstrap';
-import {NavLink, Link} from 'react-router-dom';
+import {NavLink, Link, useNavigate} from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
 import './Header.css';
+
+import {AuthContext } from './../../context/AuthContext'; 
 
 const nav__links=[
   {
@@ -29,6 +31,14 @@ const nav__links=[
 ]
 function Header({ onSearch }) {
   const [searchText, setSearchText] = useState('');
+  const navigate = useNavigate();
+  const {user , dispatch} = useContext(AuthContext)
+
+  const logout = () =>{
+    dispatch({type: "LOGOUT"})
+    navigate("/")
+  }
+
 
   const handleSearch = () => {
     onSearch(searchText);
@@ -105,12 +115,22 @@ function Header({ onSearch }) {
                
               <div className="nav__right d-flex align-items-center gap-4">
                 <div className="nav__btns d-flex align-items-center gap-4">
-                      <Button className="btn secondary__btn"><Link to='/login'>
+
+                  {
+                    user ? (
+                    <>
+                    <h5 className='mb-0'>{"  "+user.username}</h5>
+                    <Button className='btn btn-dark' onClick={logout}>Logout</Button>
+                    </>) : (
+                    <>
+                    <Button className="btn secondary__btn"><Link to='/login'>
                         Login
                       </Link></Button>
                       <Button  className="btn primary__btn"><Link to='/register'>
                         Register
                       </Link></Button>
+                    </>
+                  )}
                 </div>
                 <span className='moblie__menu'>
                    <i className="ri-menu-line"></i>
