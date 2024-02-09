@@ -34,6 +34,9 @@ const TourDetails = () => {
     maxGroupSize,
   } = tour;
 
+  const [photoUrl, setPhotoUrl] = useState(null);
+  const [additionalPhotos, setAdditionalPhotos] = useState([]);
+
   const { totalRating, avgRating } = calculateAvgRating(reviews);
 
   const options = { day: "numeric", month: "long", year: "numeric" };
@@ -73,9 +76,64 @@ const TourDetails = () => {
   };
 
 
-  useEffect(()=>{
-    window.scrollTo(0,0)
-  } , [])
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const fetchPhoto = async () => {
+      try {
+        const apiKey = "EB1py9IDgxegMEKCpTVUcS9Rch4yb3CEIBtpBdZTAXtnknaOcnwhHDLD"; 
+        const response = await fetch(
+          `https://api.pexels.com/v1/search?query=${title}&per_page=1&page=1`,
+          {
+            headers: {
+              Authorization: apiKey,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.photos && data.photos.length > 0) {
+          setPhotoUrl(data.photos[0].src.large);
+        }
+      } catch (error) {
+        console.error("Error fetching photo:", error);
+      }
+    };
+
+    fetchPhoto();
+  }, [city, title]);
+
+  //additional photos
+  //additional photos
+useEffect(() => {
+  const fetchAdditionalPhotos = async () => {
+    try {
+      const apiKey = "EB1py9IDgxegMEKCpTVUcS9Rch4yb3CEIBtpBdZTAXtnknaOcnwhHDLD";
+      const perPage = 5;
+      const page = 1;
+
+      const response = await fetch(
+        `https://api.pexels.com/v1/search?query=${title}&per_page=${perPage}&page=${page}`,
+        {
+          headers: {
+            Authorization: apiKey,
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      if (data.photos && data.photos.length > 0) {
+        setAdditionalPhotos(data.photos.slice(1));
+      }
+    } catch (error) {
+      console.error("Error fetching additional photos:", error);
+    }
+  };
+
+  fetchAdditionalPhotos();
+}, [title]);
+
 
 
   return (
@@ -88,7 +146,11 @@ const TourDetails = () => {
             !loading && !error && <Row>
             <Col lg="8">
               <div className="tour_content">
-                <img src={photo} alt="" />
+              <img
+              src={photoUrl}
+              alt="tour-img"
+              style={{ width: "100%", height: "450px", objectFit: "cover" }}
+            />
                 <div className="tour_info">
                   <h2>{title}</h2>
 
@@ -204,6 +266,23 @@ const TourDetails = () => {
           }
         </Container>
       </section>
+      <section className="additional_photos">
+        <Container>
+          <h4>More Images</h4>
+          <Row>
+            {additionalPhotos.map((photo) => (
+              <Col key={photo.id} md="4">
+                <img
+              src={photo.src.large2x}
+              alt="tour-img"
+              style={{ width: "100%", height: "200px", objectFit: "cover" }}
+            />
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+
     </>
   );
 };
