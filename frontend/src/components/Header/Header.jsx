@@ -1,9 +1,6 @@
 // Header.jsx
 import React, { useContext, useState } from 'react';
 // import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Container, Row,Button} from 'reactstrap';
 import {NavLink, Link, useNavigate} from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
