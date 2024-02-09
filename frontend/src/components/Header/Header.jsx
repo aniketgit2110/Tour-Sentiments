@@ -116,7 +116,6 @@ function Header({ onSearch }) {
                   {
                     user ? (
                     <>
-                    <h5 className='mb-0'>{"  "+user.username}</h5>
                     <Button className='btn btn-dark' onClick={logout}>Logout</Button>
                     </>) : (
                     <>

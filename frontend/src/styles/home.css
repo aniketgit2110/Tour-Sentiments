@@ -29,6 +29,10 @@
     object-fit:cover;
 }
 
+#welcome{
+    margin-bottom: 50px;
+}
+
 .hero__content {
     padding-top: 3.5rem;
 }

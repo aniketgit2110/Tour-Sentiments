@@ -9,14 +9,19 @@ import Subtitle from '../shared/subtitle';
 import FeaturedTourList from '../components/featured-tours/FeaturedTourList';
 import SearchBar from '../shared/SearchBar';
 import ServiceList from '../services/ServiceList';
+import { useContext } from 'react';
+
+import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
+  const {user} = useContext(AuthContext)
   return <>
   <section>
     <Container>
       <Row>
         <Col lg='6'>
           <div className="hero__content">
+          <h1 className='mb-0' id='welcome'>{"Hi " + user.username}</h1>
             <div className="hero__subtitle d-flex align-items-center">
              <Subtitle subtitle={'know Before You Go'}/>
              <img src={worldImg} alt="" />
