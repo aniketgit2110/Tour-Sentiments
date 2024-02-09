@@ -273,7 +273,7 @@ useEffect(() => {
             {additionalPhotos.map((photo) => (
               <Col key={photo.id} md="4">
                 <img
-              src={photo.src.large2x}
+              src={photo.src.original}
               alt="tour-img"
               style={{ width: "100%", height: "200px", objectFit: "cover" }}
             />
