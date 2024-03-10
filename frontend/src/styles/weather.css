@@ -161,3 +161,13 @@
     text-align: center;
     color: black;
 }
+@media screen and (max-width: 768px) {
+    .row {
+      flex-direction: column; /* or any other adjustments */
+    }
+  
+    .days {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+  }
+  

@@ -123,35 +123,35 @@ const Weather = () => {
         <div className="part">
             <div className="heading">SunRise</div>
             <div className="component">
-                <div className="icon"><img src="https://icon-library.com/images/sunrise-icon-png/sunrise-icon-png-25.jpg" alt="" /></div>
+                <div className="icons"><img src="https://icon-library.com/images/sunrise-icon-png/sunrise-icon-png-25.jpg" alt="" /></div>
                 <div className="value">{weatherData ? weatherData.current_observation.astronomy.sunrise : '-'}</div>
             </div>
         </div>
         <div className="part">
             <div className="heading">Sunset</div>
             <div className="component">
-                <div className="icon"><img src="https://webstockreview.net/images/sunset-clipart-logo-4.png" alt="" /></div>
+                <div className="icons"><img src="https://webstockreview.net/images/sunset-clipart-logo-4.png" alt="" /></div>
                 <div className="value">{weatherData ? weatherData.current_observation.astronomy.sunset : '-'}</div>
             </div>
         </div>
         <div className="part">
             <div className="heading">Humidity</div>
             <div className="component">
-                <div className="icon"><img src="https://pic.onlinewebfonts.com/svg/img_434060.png" alt="" /></div>
+                <div className="icons"><img src="https://pic.onlinewebfonts.com/svg/img_434060.png" alt="" /></div>
                 <div className="value">{weatherData ? weatherData.current_observation.atmosphere.humidity : '-'}</div>
             </div>
         </div>
         <div className="part">
             <div className="heading">Wind</div>
             <div className="component">
-                <div className="icon"><img src="https://icon-library.com/images/wind-icon-png/wind-icon-png-2.jpg" alt="" /></div>
+                <div className="icons"><img src="https://icon-library.com/images/wind-icon-png/wind-icon-png-2.jpg" alt="" /></div>
                 <div className="value">{weatherData ? ((weatherData.current_observation.wind.chill-32)*5/9).toFixed(2) : '-'}<span>°C</span></div>
             </div>
         </div>
         <div className="part">
             <div className="heading">Pressure</div>
             <div className="component">
-                <div className="icon"><img src="https://cdn4.iconfinder.com/data/icons/weather-287/32/92-_pressure-_air-_wind-_weather-512.png" alt="" /></div>
+                <div className="icons"><img src="https://cdn4.iconfinder.com/data/icons/weather-287/32/92-_pressure-_air-_wind-_weather-512.png" alt="" /></div>
                 <div className="value">{weatherData ? weatherData.current_observation.atmosphere.pressure : '-'}<span>Pa</span></div>
             </div>
         </div>

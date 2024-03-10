@@ -8,12 +8,14 @@ import SearchResultList from '../pages/SearchResultList';
 import Home from '../pages/Home';
 import ThankYou from "../pages/ThankYou";
 import Weather from '../pages/Weather';
+import About from '../pages/About';
 
 const Routers = () => {
   return (
     <Routes>
       <Route path='/' element={<Navigate to='/home/' />} />
       <Route path='/home' element={<Home/>} />
+      <Route path='/about' element={<About/>} />
       <Route path='/tours' element={<Tours/>} />
       <Route path='/weather' element={<Weather/>} />
       <Route path='/tours/:id' element={<TourDetails/>} />

@@ -4,28 +4,41 @@ import { Col, Form,FormGroup } from "reactstrap";
 import {BASE_URL} from "./../utils/config.js";
 import useFetch from '../hooks/useFetch.js';
 import {useNavigate} from 'react-router-dom';
+import axios from "axios";
 const SearchBar = () => {
   const locationRef = useRef('')
   const intrestRef = useRef(0)
   const noofdaysRef = useRef(0)
   const navigate = useNavigate()
  
-  const searchHandler = async()=>  {
-    const location = locationRef.current.value
-    const distance = intrestRef.current.value
-    const maxGroupSize = noofdaysRef.current.value
+  const searchHandler = async () => {
+    const location = locationRef.current.value;
+    const interest = intrestRef.current.value;
+    const distance = noofdaysRef.current.value;
 
-    if(location==''){
+    if (location === '') {
       return alert('Location required!');
     }
-    const res = await fetch(`${BASE_URL}/tours/search/getTourBySearch?city = ${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`)
 
+    try {
+      const response = await axios.get(`${BASE_URL}/sqlroute/search`, {
+        params: {
+          location,
+          interest,
+          distance,
+        },
+      });
 
-    if(!res.ok) alert('Something went wrong')
+      console.log(response.data);
 
-    const result = await res.json()
-    navigate(`/tours/search/?city = ${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`,{state:result.data})
-   }
+      navigate(`/tours/search/?city=${location}&distance=${distance}&maxGroupSize=${interest}`, {
+        state: response.data.result,
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('Something went wrong');
+    }
+  };
 
 
    
@@ -56,13 +69,14 @@ const SearchBar = () => {
               <i className='ri-group-line'></i> 
               </span> 
               <div>
-                <h6>No. of days</h6>
+                <h6>Distance</h6>
                 <input type="number" placeholder="0" ref={noofdaysRef}/>
               </div>
         </FormGroup>
         <span className='search__icon' type="submit" onClick={searchHandler}>
           <i className='ri-search-line'></i>
         </span>
+
 
     </Form>
    </div>

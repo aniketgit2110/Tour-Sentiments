@@ -1,0 +1,73 @@
+.plan{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 20px;
+    gap: 10px;
+    margin-left: -30px;
+}
+.day_section{
+    width: 200px;
+    height: 260px;
+    padding: 20px;
+    border: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.data{
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    height: 325px;
+    padding: 20px;
+}
+.block{
+    margin-right: -30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    border: 1px solid lightgray;
+}
+.single-data{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.Day{
+    font-size: 40px;
+}
+.dayval{
+    font-size: 90px;
+    color: orange;
+    font-weight: bold;
+}
+.data{
+    overflow: scroll;
+}
+.data::-webkit-scrollbar{
+    display: none;
+}
+.time{
+    color: orange;
+    font-weight: bold;
+}
+.reviews{
+    margin: 0px 30px;
+    width: 600px;
+    border-radius: 20px;
+}
+.routes{
+    color: white;
+    background-color: orange;
+    border: 1px solid orange;
+    border-radius: 10px;
+    padding: 3px 15px;
+    transition: 0.3s ease-in-out;
+}
+.routes:hover{
+    color: orange;
+    background-color: white;
+}

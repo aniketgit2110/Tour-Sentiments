@@ -21,7 +21,7 @@ const Home = () => {
       <Row>
         <Col lg='6'>
           <div className="hero__content" >
-          <h2 className='mb-4 ' id='welcome'>{"Hi " + user.username + " !!"}</h2>
+          <h2 className='mb-4 ' id='welcome'>{`Hi, ${user ? user.username : "Guest"} !!`}</h2>
             <div className="hero__subtitle d-flex align-items-center">
              <Subtitle subtitle={'know Before You Go'}/>
              <img src={worldImg} alt="" />
@@ -68,7 +68,7 @@ const Home = () => {
   </section>
   
   {/* feature section starts */}
-   <section>
+   {/* <section>
     <Container>
       <Row>
         <Col lg="12" className='mb-5'>
@@ -78,7 +78,7 @@ const Home = () => {
         <FeaturedTourList />
       </Row>
     </Container>
-   </section>
+   </section> */}
   {/* feature section ends */}
 
   {//weather section

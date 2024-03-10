@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from "react";
 import CommonSection from "../shared/CommonSection";
-
 import "../styles/tours.css";
-import tourData from "../assets/data/tours";
 import TourCard from "./../shared/TourCard";
 import SearchBar from "../shared/SearchBar";
 import { Container, Row, Col } from "reactstrap";
-import useFetch from "../hooks/useFetch.js";
-import { BASE_URL } from "../utils/config.js";
 import LoadingAnimation from "../LoadingAnimation.jsx";
-
+import { BASE_URL } from "../utils/config.js";
+import axios from "axios"; 
+import { Link } from "react-router-dom";
 
 const Tours = () => {
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
-  const {data:tours , loading ,error} = useFetch(`${BASE_URL}/tours?page=${page}`)
-  const {data:tourCount} = useFetch(`${BASE_URL}/tours/search/getTourCount`)
-
+  const [tours, setTours] = useState([]);  // Initialize tours state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const pages = Math.ceil(tourCount /8);
-    setPageCount(pages);
-    window.scrollTo(0,0)
-  }, [page , tourCount, tours]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/sqlroute`);
+        setTours(response.data); 
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);  // Empty dependency array, runs once on mount
+
   return (
     <>
       <CommonSection title={"Tours"} />
@@ -35,34 +41,35 @@ const Tours = () => {
       </section>
       <section className="pt-0">
         <Container>
-
-        {loading && <LoadingAnimation />} 
-      {error && <h4>Error: {error}</h4>} 
-          {
-            !loading && !error && <Row>
-            {tours?.map((tour) => (
-              <Col lg="3" className="mb-4" key={tour._id}>
-                <TourCard tour={tour} />
-              </Col>
-            ))}
-            <Col lg="12">
-               <div className="pagination d-flex align-items-center justify-content-center mt-4 gap-3">
-                {
-                  [...Array(pageCount).keys()].map(number =>(
-                    <span key={number} onClick={()=>setPage(number)}
-                    className={page==number ? 'active_page':''}
-                    >
-                      {number+1}
-                    </span>
-                  ))
-                }
-
-               </div>
-
-            </Col>
-          </Row>
-          }
+          {loading && <LoadingAnimation />}
+          {error && <h4>Error: {error}</h4>}
+          {!loading && !error && (
+            <Row>
+              {tours.map((tour, index) => (
+                <Col lg="3" className="mb-4" key={index}>
+                  <TourCard tour={tour} />
+                </Col>
+              ))}
+            </Row>
+          )}
         </Container>
+        <Link to="/about" style={{ display:"flex", justifyContent:"center", padding:"20px", textDecoration: 'none' }}>
+  <button
+    style={{
+      backgroundColor: 'orange',
+      color: '#fff',
+      padding: '10px 20px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontSize: '16px',
+      fontWeight: 'bold',
+      transition: 'background-color 0.3s',
+    }}
+  >
+    Generate Plan
+  </button>
+</Link>
       </section>
     </>
   );

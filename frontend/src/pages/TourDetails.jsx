@@ -1,7 +1,10 @@
-import React, { useState, useRef  , useEffect, useContext} from "react";
-import "./../styles/tour-details.css";
-import { Container, Row, Col, Form, ListGroup } from "reactstrap";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { Container, Row, Col } from "reactstrap";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useJsApiLoader, GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
+
+import "../styles/tour-details.css"
 
 import calculateAvgRating from "./../utils/avgRating";
 import avatar from "../assets/images/avatar.jpg";
@@ -9,81 +12,44 @@ import Booking from "../components/Booking/Booking";
 import useFetch from "../hooks/useFetch.js";
 import { BASE_URL } from "../utils/config.js";
 import LoadingAnimation from "../LoadingAnimation.jsx";
+import { AuthContext } from "./../context/AuthContext";
 
-import {AuthContext} from './../context/AuthContext';
-
+const center = { lat: 19.0760, lng: 72.8777 };
+const libraries = ["places"]
 
 const TourDetails = () => {
   const { id } = useParams();
-  const reviewMsgRef = useRef("");
-  const [tourRating, setTourRating] = useState(null);
-  const {user} = useContext(AuthContext)
-
-
-  const {data:tour , loading , error} = useFetch(`${BASE_URL}/tours/${id}`);
-
-  const {
-    photo,
-    title,
-    desc,
-    price,
-    address,
-    reviews,
-    city,
-    distance,
-    maxGroupSize,
-  } = tour;
-
+  const { user } = useContext(AuthContext);
+  const [tour, setTour] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
-  const [additionalPhotos, setAdditionalPhotos] = useState([]);
+  const [directionsResponse, setDirectionsResponse] = useState(null);
+  const [distance, setDistance] = useState('');
+  const [duration, setDuration] = useState('');
 
-  const { totalRating, avgRating } = calculateAvgRating(reviews);
+  const [currentLocation, setCurrentLocation] = useState(center);
 
-  const options = { day: "numeric", month: "long", year: "numeric" };
-
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const reviewText = reviewMsgRef.current.value;
-
-    try{
-    if(!user || user === undefined || user === null){
-      alert('Please Sign In')
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const originLatLng = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      
+      setCurrentLocation(originLatLng);
     }
-
-    const reviewObj = {
-      username:user?.username,
-      reviewText,
-      rating:tourRating
-    }
-      const res = await fetch(`${BASE_URL}/review/${id}`,{
-        method: 'post',
-        headers:{
-          'content-type':'application/json'
-        },
-        credentials:'include',
-        body:JSON.stringify(reviewObj)
-      })
-
-
-      const result = await res.json()
-      if(!res.ok){
-        return alert(result.message);
-      }
-      alert(result.message);
-    }catch(err){
-      alert(err.message);
-    }
-  };
+  );
 
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
-    const fetchPhoto = async () => {
+    const fetchData = async () => {
       try {
-        const apiKey = "EB1py9IDgxegMEKCpTVUcS9Rch4yb3CEIBtpBdZTAXtnknaOcnwhHDLD"; 
+        const tourById = await axios.get(`${BASE_URL}/sqlroute/${id}`);
+        setTour(tourById.data.result);
+
+        // Fetch photo
+        const apiKey = "EB1py9IDgxegMEKCpTVUcS9Rch4yb3CEIBtpBdZTAXtnknaOcnwhHDLD";
         const response = await fetch(
-          `https://api.pexels.com/v1/search?query=${title}&per_page=1&page=1`,
+          `https://api.pexels.com/v1/search?query=${tourById.data.result.Place}&per_page=1&page=1&fit=crop`,
           {
             headers: {
               Authorization: apiKey,
@@ -94,197 +60,152 @@ const TourDetails = () => {
         const data = await response.json();
         if (data.photos && data.photos.length > 0) {
           setPhotoUrl(data.photos[0].src.large);
+        } else {
+          setPhotoUrl("https://example.com/default-image.jpg");
         }
       } catch (error) {
-        console.error("Error fetching photo:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchPhoto();
-  }, [city, title]);
+    fetchData();
+  }, [id]);
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
 
-  //additional photos
-  //additional photos
-useEffect(() => {
-  const fetchAdditionalPhotos = async () => {
-    try {
-      const apiKey = "EB1py9IDgxegMEKCpTVUcS9Rch4yb3CEIBtpBdZTAXtnknaOcnwhHDLD";
-      const perPage = 5;
-      const page = 1;
-
-      const response = await fetch(
-        `https://api.pexels.com/v1/search?query=${title}&per_page=${perPage}&page=${page}`,
-        {
-          headers: {
-            Authorization: apiKey,
-          },
-        }
-      );
-
-      const data = await response.json();
-      console.log(data);
-      if (data.photos && data.photos.length > 0) {
-        setAdditionalPhotos(data.photos.slice(1));
-      }
-    } catch (error) {
-      console.error("Error fetching additional photos:", error);
+    const stars = [];
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={i} className="ri-star-fill" style={{ color: "orange" }}></i>);
     }
+
+    if (halfStar) {
+      stars.push(<i key="half" className="ri-star-half-fill" style={{ color: "orange" }}></i>);
+    }
+
+    return stars;
   };
 
-  fetchAdditionalPhotos();
-}, [title]);
-
-
-
-  return (
-    <>
-      <section>
-        <Container>
-        {loading && <LoadingAnimation />} 
-      {error && <h4>Error: {error}</h4>} 
-          {
-            !loading && !error && <Row>
-            <Col lg="8">
-              <div className="tour_content">
-              <img
-              src={photoUrl}
-              alt="tour-img"
-              style={{ width: "100%", height: "450px", objectFit: "cover" }}
-            />
-                <div className="tour_info">
-                  <h2>{title}</h2>
-
-                  <div className="d-flex align-items-center gap-5">
-                    <span className="tour_rating d-flex align-items-center gap-1">
-                      <i
-                        className="ri-star-fill"
-                        style={{ color: "var(--secondary-color)" }}
-                      ></i>
-                      {avgRating == 0 ? null : avgRating}
-                      {totalRating == 0 ? (
-                        "Not rated"
-                      ) : (
-                        <span>({reviews?.length})</span>
-                      )}
-                    </span>
-                    <span>
-                      <i className="ri-map-pin-fill"></i>
-                      {address}
-                    </span>
-                  </div>
-                  <div className="tour_extra-details">
-                    <span>
-                      <i className="ri-map-pin-2-line"></i>
-                      {city}
-                    </span>
-                    <span>
-                      <i className="ri-money-dollar-circle-line"></i>${price}
-                      /per person
-                    </span>
-                    <span>
-                      <i className="ri-map-pin-time-line"></i>
-                      {distance} k/m
-                    </span>
-                    <span>
-                      <i className="ri-group-line"></i> {maxGroupSize} people
-                    </span>
-                  </div>
-                  <h5>Description</h5>
-                  <p>{desc}</p>
-                </div>
-
-                <div className="tour_reviews mt-4">
-                  <h4>Reviews ({reviews?.length} reviews)</h4>
-
-                  <Form onSubmit={submitHandler}>
-                    <div className="d-flex align-items-center gap-3 rating_group">
-                      <span onClick={() => setTourRating(1)}>
-                        1 <i className="ri-star-s-fill"></i>
-                      </span>
-                      <span onClick={() => setTourRating(2)}>
-                        2 <i className="ri-star-s-fill"></i>
-                      </span>
-                      <span onClick={() => setTourRating(3)}>
-                        3 <i className="ri-star-s-fill"></i>
-                      </span>
-                      <span onClick={() => setTourRating(4)}>
-                        4 <i className="ri-star-s-fill"></i>
-                      </span>
-                      <span onClick={() => setTourRating(5)}>
-                        5 <i className="ri-star-s-fill"></i>
-                      </span>
-                    </div>
-
-                    <div className="review_input">
-                      <input
-                        type="text"
-                        ref={reviewMsgRef}
-                        placeholder="share your thoughts"
-                        required
-                      />
-                      <button
-                        type="submit"
-                        className="btn primary__btn text-white"
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </Form>
-
-                  <ListGroup className="user-reviews">
-                    {reviews?.map((review) => (
-                      <div className="review_item">
-                        <img src={avatar} alt="" />
-                        <div className="w-100">
-                          <div className="d-flex align-items-center justify-content-between">
-                            <div>
-                              <h5>{review.username}</h5>
-                              <p>
-                                {new Date(review.createdAt).toLocaleDateString(
-                                  "en-US",
-                                  options
-                                )}
-                              </p>
-                            </div>
-                            <span className="d-flex align-items-center">
-                              {review.rating}<i className="ri-star-s-fill"></i>
-                            </span>
-                          </div>
-                          <h6>{review.reviewText}</h6>
-                        </div>
-                      </div>
-                    ))}
-                  </ListGroup>
-                </div>
-              </div>
-            </Col>
-
-            <Col lg="4">
-              <Booking tour={tour} avgRating={avgRating}></Booking>
-            </Col>
-          </Row>
+  const getCoordinatesByPlace = async (placeName) => {
+    const geocoder = new google.maps.Geocoder();
+    return new Promise((resolve, reject) => {
+      geocoder.geocode({ address: placeName }, (results, status) => {
+        if (status === 'OK' && results && results.length > 0) {
+          resolve({
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+          });
+        } else {
+          console.error('Error getting coordinates by place name:', status);
+          reject(new Error('Invalid request or no results.'));
+        }
+      });
+    });
+  };
+  const [first , setFirst] = useState(true);
+  const calculateRoute = async () => {
+    setFirst(false)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const originLatLng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCurrentLocation(originLatLng);
+  
+          let destinationLatLng = {};
+          if (tour && tour.City) {
+            const combinedPath = `${tour.Place}${tour.City} `;
+            destinationLatLng = await getCoordinatesByPlace(combinedPath);
+            console.log(destinationLatLng);
           }
-        </Container>
-      </section>
-      <section className="additional_photos">
-        <Container>
-          <h4>More Images</h4>
-          <Row>
-            {additionalPhotos.map((photo) => (
-              <Col key={photo.id} md="4">
-                <img
-              src={photo.src.original}
-              alt="tour-img"
-              style={{ width: "100%", height: "200px", objectFit: "cover" }}
-            />
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      </section>
+  
+          if (Object.keys(destinationLatLng).length === 0) {
+            destinationLatLng = await getCoordinatesByPlace(tour && tour.City);
+            return;
+          }
+  
+          const directionsService = new google.maps.DirectionsService();
+          const results = await directionsService.route({
+            origin: originLatLng,
+            destination: destinationLatLng,
+            travelMode: google.maps.TravelMode.DRIVING,
+          });
+  
+          setDirectionsResponse(results);
+          setDistance(results.routes[0].legs[0].distance.text);
+          setDuration(results.routes[0].legs[0].duration.text);
+        },
+      );
+    }
+  };
+    const { isLoaded } = useJsApiLoader({
+      googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
+      libraries,
+    });
 
-    </>
-  );
+    if(!isLoaded){
+      return <LoadingAnimation />
+    }
+
+return (
+  <div className="tour">
+    <div className="section1">
+      <div className="details">
+        <div className="tour_image">
+          <img
+            src={photoUrl}
+            alt="tour-img"
+            style={{ width: "700px", height: "400px", objectFit: "cover", borderRadius: "30px", imageRendering: "high-quality" }}
+          />
+        </div>
+        <div className="content">
+          <div className="container2">
+            <div style={{ display: "flex", gap: "15px" }}>
+              <i className="ri-map-pin-line" style={{ color: "orange", fontSize: "60px", marginRight: "-20px", marginLeft: "10px" }}></i>
+              <div className="Place">{tour ? tour.Place : ''}</div>
+            </div>
+            <div className="Ratings">{renderStars(tour ? tour.Ratings : 0)}{tour ? "(" + tour.Ratings + ")" : 0}</div>
+          </div>
+          <div className="city" style={{ fontSize: "40px", marginLeft: "10px" , display:"flex" , justifyContent:"space-between" }}>{tour ? tour.City : ''}<div style={{marginRight:"20px"}}><span style={{fontSize:"19px"}}>Distance from city center : </span><span style={{fontSize:"19px" , color:"orange"}}>{tour && tour.Distance + ' km '}</span></div></div>
+          <div className="map-details">
+            <button onClick={calculateRoute} className="route">Find Map route</button>
+            <span>Duration : <span style={{ color: "orange" }}>{duration}</span></span>
+            <span>Distance : <span style={{ color: "orange" }}>{distance}</span></span>
+          </div>
+          <div className="Place_desc">{tour ? tour.Place_desc : ''}</div>
+        </div>
+      </div>
+      <div className="reviews">
+        <div className="map" style={{ width: "107%", height: "760px", marginLeft: "0px" , left:"0" , right:"0" , marginRight:"0px" }}>
+          {
+            first?
+            <GoogleMap center={currentLocation} zoom={15} mapContainerStyle={{ width: "100%", height: "100%" }} options={{
+              zoomControl: false,
+              streetViewControl: true,
+              mapTypeControl: false,
+            }}>
+              {currentLocation && <Marker position={currentLocation} />}
+              {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+            </GoogleMap>
+            :
+            <GoogleMap zoom={15} mapContainerStyle={{ width: "100%", height: "100%" }} options={{
+              zoomControl: false,
+              streetViewControl: true,
+              mapTypeControl: false,
+            }}>
+              {currentLocation && <Marker position={currentLocation} />}
+              {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+            </GoogleMap>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+);
+
 };
 
 export default TourDetails;

@@ -1,11 +1,12 @@
 // LoadingAnimation.jsx
 import React from 'react';
 import './LoadingAnimation.css';
+import Loader from "./assets/Loader.gif"
 
 const LoadingAnimation = () => (
   <div className="loading-animation">
-    <div className="spinner"></div>
-    <div>Loading...</div>
+    <img src={Loader} style={{background:"transparent" , width:"200px" , height:"200px" , marginTop:"-100px"}} alt="" />
+    <span style={{color:"black" , fontSize:"30px", marginLeft:"20px"}}>Generating ...</span>
   </div>
 );
 
