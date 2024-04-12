@@ -25,6 +25,7 @@ const TourDetails = () => {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
+  const [price , setPrice] = useState(0);
 
   const [currentLocation, setCurrentLocation] = useState(center);
 
@@ -136,10 +137,67 @@ const TourDetails = () => {
           setDirectionsResponse(results);
           setDistance(results.routes[0].legs[0].distance.text);
           setDuration(results.routes[0].legs[0].duration.text);
+
+          const durationText = results.routes[0].legs[0].duration.text;
+        const durationArray = durationText.split(' ');
+        let totalDurationMinutes = 0;
+        for (let i = 0; i < durationArray.length; i += 2) {
+          if (durationArray[i + 1] === 'hours' || durationArray[i + 1] === 'hour') {
+            totalDurationMinutes += parseInt(durationArray[i]) * 60;
+          } else if (durationArray[i + 1] === 'mins' || durationArray[i + 1] === 'min') {
+            totalDurationMinutes += parseInt(durationArray[i]);
+          }
+        }
+
+         // Calculate price
+        const baseRate = 24.99;
+        const distanceRate = 0.15; // $ per kilometer
+        const durationRate = 0.01; // $ per minute
+        const stopRate = 7; // $ per stop
+        const specialFeaturesRate = 0; // If you have any special features rate, you can include it here
+
+        const distanceInKm = parseFloat(results.routes[0].legs[0].distance.text.replace(/,/g, '').split(' ')[0]);
+        console.log('Distance', distanceInKm)
+        console.log('Duration : ', totalDurationMinutes)
+        let numStops = 0;
+        if (distanceInKm >= 50 && distanceInKm < 200) {
+          numStops = 1;
+        } else if (distanceInKm >= 200 && distanceInKm < 700) {
+          numStops = 2;
+        } else if (distanceInKm >= 700) {
+          numStops = 3;
+        }
+        console.log('Stops : ', numStops)
+
+        const priceTour = calculate_price(distanceInKm, totalDurationMinutes, numStops, baseRate, distanceRate, durationRate, stopRate, specialFeaturesRate);
+        console.log("Price:", priceTour); // Display the calculated price in the console
+        setPrice(priceTour);
         },
       );
     }
   };
+  const calculate_price = (distance, duration, numStops, baseRate, distanceRate, durationRate, stopRate, specialFeaturesRate) => {
+    // Calculate total distance-based cost
+    const distanceCost = distance * distanceRate;
+    
+    // Calculate total duration-based cost
+    const durationCost = duration * durationRate;
+    
+    // Calculate total stop-based cost
+    const stopCost = numStops * stopRate;
+
+    // Calculate total special features cost
+    const specialFeaturesCost = specialFeaturesRate; // Add more logic if needed
+
+    // Calculate total price
+    const totalPrice = baseRate + distanceCost + durationCost + stopCost + specialFeaturesCost;
+
+    // Round the total price to two decimal places
+    const roundedPrice = Math.round(totalPrice * 100) / 100;
+
+    return roundedPrice;
+};
+
     const { isLoaded } = useJsApiLoader({
       googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
       libraries,
@@ -168,11 +226,12 @@ return (
             </div>
             <div className="Ratings">{renderStars(tour ? tour.Ratings : 0)}{tour ? "(" + tour.Ratings + ")" : 0}</div>
           </div>
-          <div className="city" style={{ fontSize: "40px", marginLeft: "10px" , display:"flex" , justifyContent:"space-between" }}>{tour ? tour.City : ''}<div style={{marginRight:"20px"}}><span style={{fontSize:"19px"}}>Distance from city center : </span><span style={{fontSize:"19px" , color:"orange"}}>{tour && tour.Distance + ' km '}</span></div></div>
+          <div className="city" style={{ fontSize: "40px", marginLeft: "10px" , display:"flex" , justifyContent:"space-between" }}>{tour ? tour.City : ''}<div style={{marginRight:"20px"}}><span style={{fontSize:"40px" , color:"orange"}}>{`$ `+price}</span></div></div>
           <div className="map-details">
             <button onClick={calculateRoute} className="route">Find Map route</button>
             <span>Duration : <span style={{ color: "orange" }}>{duration}</span></span>
             <span>Distance : <span style={{ color: "orange" }}>{distance}</span></span>
+            <span>Price : <span style={{ color: "orange" }}>{price}</span></span>
           </div>
           <div className="Place_desc">{tour ? tour.Place_desc : ''}</div>
         </div>

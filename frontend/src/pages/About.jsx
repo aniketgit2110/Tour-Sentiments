@@ -14,7 +14,7 @@ function About() {
     const [apitext , setapiText] = useState("");
   
     const genAI = new GoogleGenerativeAI(
-      "AIzaSyASI3Kr9GoqgvWPYGpwwPLiR27s0h5fzE8"
+      "AIzaSyAq-Mou4fgk70MATlC9tPIEFqwYmwMBXRU"
     );
   
     const fetchData = async () => {

@@ -39,7 +39,7 @@ const Weather = () => {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': '3150ddf5f0mshb0a68ea71f1ee45p1cf02ajsn1f084f7d085a',
+        'X-RapidAPI-Key': '57098254bdmshb488259a0fb4c73p154d22jsndaa3687451b8',
         'X-RapidAPI-Host': 'yahoo-weather5.p.rapidapi.com'
       }
     };
